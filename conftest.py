@@ -18,11 +18,18 @@ def pytest_addoption(parser):
                      help="Run in headless mode")
 
 
-@pytest.fixture(scope="function")
-def driver(request):
-    """Фикстура для инициализации драйвера"""
+@pytest.fixture
+def browser_options(request):
+    """Фикстура для получения настроек браузера"""
     browser = request.config.getoption("--browser")
     headless = request.config.getoption("--headless")
+    return browser, headless
+
+
+@pytest.fixture
+def create_driver(browser_options):
+    """Фикстура для создания экземпляра браузера"""
+    browser, headless = browser_options
 
     if browser == "chrome":
         chrome_options = ChromeOptions()
@@ -33,7 +40,7 @@ def driver(request):
         chrome_options.add_argument("--no-sandbox")
         chrome_options.add_argument("--disable-dev-shm-usage")
         driver = webdriver.Chrome(options=chrome_options)
-    else:  # firefox по умолчанию
+    else:
         firefox_options = FirefoxOptions()
         if headless:
             firefox_options.add_argument("--headless")
@@ -41,11 +48,26 @@ def driver(request):
         firefox_options.add_argument("--height=1080")
         driver = webdriver.Firefox(options=firefox_options)
 
-    driver.get(BASE_URL)
     driver.maximize_window()
     driver.implicitly_wait(10)
 
-    # Закрываем cookie-согласие если оно есть
+    yield driver
+
+    driver.quit()
+
+
+@pytest.fixture
+def open_main_page(create_driver):
+    """Фикстура для открытия главной страницы"""
+    driver = create_driver
+    driver.get(BASE_URL)
+    return driver
+
+
+@pytest.fixture
+def close_cookie_consent(open_main_page):
+    """Фикстура для закрытия cookie-согласия"""
+    driver = open_main_page
     try:
         cookie_consent = (By.CLASS_NAME, "App_CookieConsent__1yUIN")
         close_button = (By.XPATH, "//button[contains(text(), 'да') or contains(text(), 'Да')]")
@@ -59,10 +81,13 @@ def driver(request):
                 pass
     except:
         pass
+    return driver
 
-    yield driver
 
-    driver.quit()
+@pytest.fixture
+def driver(close_cookie_consent):
+    """Фикстура для инициализации драйвера (обратная совместимость)"""
+    return close_cookie_consent
 
 
 @pytest.fixture(scope="function")

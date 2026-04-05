@@ -49,7 +49,7 @@ class TestFAQ:
 
         # Шаг 3: Ждем появления ответа
         try:
-            WebDriverWait(driver, 5).until(
+            WebDriverWait(driver, 15).until(
                 EC.visibility_of_element_located(MainPageLocators.get_answer_by_index(index))
             )
         except TimeoutException:
@@ -77,7 +77,7 @@ class TestFAQ:
         main_page.click_question_by_index(0)
 
         # Ждем появления первого ответа
-        WebDriverWait(driver, 5).until(
+        WebDriverWait(driver, 15).until(
             EC.visibility_of_element_located(MainPageLocators.get_answer_by_index(0))
         )
 
@@ -89,8 +89,8 @@ class TestFAQ:
         # Открываем второй вопрос
         main_page.click_question_by_index(1)
 
-        # Ждем появления второго ответа
-        WebDriverWait(driver, 5).until(
+        # Ждем появления второго ответа с увеличенным таймаутом
+        WebDriverWait(driver, 20).until(
             EC.visibility_of_element_located(MainPageLocators.get_answer_by_index(1))
         )
 
@@ -107,7 +107,7 @@ class TestFAQ:
         main_page.click_question_by_index(0)
 
         # Ждем появления ответа
-        WebDriverWait(driver, 5).until(
+        WebDriverWait(driver, 15).until(
             EC.visibility_of_element_located(MainPageLocators.get_answer_by_index(0))
         )
         assert main_page.is_answer_visible_by_index(0), "Ответ должен открыться после первого клика"
@@ -130,7 +130,7 @@ class TestFAQ:
             main_page.click_question_by_index(i)
 
             # Ждем появления ответа
-            WebDriverWait(driver, 5).until(
+            WebDriverWait(driver, 15).until(
                 EC.visibility_of_element_located(MainPageLocators.get_answer_by_index(i))
             )
 

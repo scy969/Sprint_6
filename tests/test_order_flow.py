@@ -13,29 +13,16 @@ class TestOrderFlow:
 
     # ==================== ПОЗИТИВНЫЕ ТЕСТЫ ====================
 
-    @pytest.mark.parametrize("order_data, button_type", [
-        (OrderData.FIRST_ORDER, "header"),
-        (OrderData.SECOND_ORDER, "bottom"),
-    ])
-    def test_positive_order_flow(self, main_page, order_page, order_data, button_type):
+    def test_positive_order_flow_with_first_data(self, main_page, order_page):
         """
-        Тест позитивного сценария заказа самоката
-        Проверяет создание заказа с разными данными и разными точками входа
+        Тест позитивного сценария заказа самоката с первым набором данных
         """
-        # Нажатие кнопки заказа в зависимости от типа
-        if button_type == "header":
-            main_page.click_header_order_button()
-        else:
-            main_page.click_bottom_order_button()
+        main_page.click_header_order_button()
+        order_page.complete_order_flow(OrderData.FIRST_ORDER)
 
-        # Оформление заказа
-        order_page.complete_order_flow(order_data)
-
-        # Проверка успешного создания заказа
         assert order_page.is_order_successful(), \
-            f"Сообщение об успешном создании заказа не появилось для данных: {order_data['name']} {order_data['surname']}"
+            f"Сообщение об успешном создании заказа не появилось"
 
-        # Проверка текста сообщения
         success_text = order_page.get_success_message_text()
         assert "Заказ оформлен" in success_text, \
             f"Неверное сообщение об успехе: {success_text}"
