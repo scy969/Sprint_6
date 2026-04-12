@@ -1,5 +1,6 @@
 import allure
 from pages.base_page import BasePage
+from config import MAIN_PAGE
 from locators.main_page_locators import (
     OrderButtonsLocators, 
     LogoLocators,
@@ -7,6 +8,16 @@ from locators.main_page_locators import (
 )
 
 class MainPage(BasePage):
+
+    @allure.step("Открыть главную страницу")
+    def open_main_page(self):
+        """Открыть главную страницу сервиса"""
+        self.open_url(MAIN_PAGE)
+
+    @allure.step("Открыть страницу заказа")
+    def open_order_page(self):
+        from config import ORDER_PAGE
+        self.open_url(ORDER_PAGE)
 
     # кнопки заказать
     @allure.step("Нажать верхнюю кнопку 'Заказать'")
@@ -26,17 +37,13 @@ class MainPage(BasePage):
     def get_faq_answer_text(self, answer_locator):
         self.wait_element_visible(answer_locator)
         return self.get_text(answer_locator)
-    
+
     @allure.step("Безопасный клик по вопросу FAQ")
     def click_faq_question_safe(self, question_locator):
-        element = self.find_element(question_locator)
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView({block: 'center', behavior: 'instant'}); "
-            "window.scrollBy(0, -300);",  # Смещаем вверх на 100px
-            element
-        )
-        self.wait_element_clickable(question_locator)
-        self.click_element(question_locator)
+        """
+        Безопасный клик по вопросу FAQ с прокруткой и ожиданием
+        """
+        self.safe_click_with_scroll(question_locator, offset=-300)
     
     # логотипы
     @allure.step("Кликнуть на логотип Яндекса")

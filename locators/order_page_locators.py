@@ -17,19 +17,39 @@ class OrderFormLocators:
     telephone_input_field = [By.XPATH, "//input[@type='text' and contains(@placeholder, 'Телефон')]"]
     # кнопка Далее
     next_button = [By.XPATH, "//button[text()='Далее']"]
+
+    # НОВЫЙ ЛОКАТОР: динамический выбор станции метро
+    @staticmethod
+    def get_metro_station_locator(station_name):
+        """Возвращает локатор для конкретной станции метро по названию"""
+        return [By.XPATH, f"//div[text()='{station_name}']"]
+
     # поле выбора даты заказа
     date_input_field = [By.XPATH, "//input[@type='text' and contains(@placeholder, 'Когда привезти самокат')]"]
     # выпадающий список выбора срока аренды
     rental_period_list = [By.CLASS_NAME, "Dropdown-root"]
-    # элемент выпадающего списка с выбором срока двое суток
+
+    # НОВЫЕ ЛОКАТОРЫ: элементы выпадающего списка срока аренды (динамические)
+    @staticmethod
+    def get_rental_period_locator(period_text):
+        """Возвращает локатор для срока аренды по тексту"""
+        return [By.XPATH, f"//div[@class='Dropdown-option' and text() = '{period_text}']"]
+
+    # элементы выпадающего списка с выбором срока (конкретные значения)
     list_item_two_days = [By.XPATH, "//div[@class='Dropdown-option' and text() = 'двое суток']"]
-    # элемент выпадающего списка с выбором срока четверо суток
     list_item_four_days = [By.XPATH, "//div[@class='Dropdown-option' and text() = 'четверо суток']"]
-    # чекбокс выбора черно цвета
+
+    # чекбокс выбора цвета
     checkbox_black = [By.ID, "black"]
-    # чекбокс выбора серого цвета
     checkbox_grey = [By.ID, "grey"]
-    # поле ввода комментария 
+
+    # НОВЫЙ ЛОКАТОР: динамический выбор цвета
+    @staticmethod
+    def get_color_checkbox_locator(color_id):
+        """Возвращает локатор для чекбокса цвета по ID"""
+        return [By.ID, color_id]
+
+    # поле ввода комментария
     comment_input_field = [By.XPATH, "//input[@type='text' and contains(@placeholder, 'Комментарий для курьера')]"]
     # кнопка заказать в форме заказа
     form_order_button = [By.XPATH, "(//button[text()='Заказать'])[2]"]
